@@ -1,6 +1,7 @@
 import requestIp from 'request-ip';
 import geoip from 'geoip-lite';
 import { getCloaksByUserId, createNewCloak, removeCloak, getCloakByName } from '../dao/cloakDAO.js';
+import { hasActiveSubscription } from '../dao/subscriptionDAO.js';
 
 export const getCloaks = async (req, res) => {
     if (!req.session.user) {
@@ -137,8 +138,9 @@ const groupBots = groupNames => {
         combinedBots = combinedBots.concat(bots);
     });
 
-    combinedBots.concat(botArrays[miscellaneous]);
-    
+    let misc = botArrays['miscellaneous'];
+    combinedBots.concat(misc);
+
     return combinedBots;
 }
 
@@ -147,34 +149,37 @@ export const processCloakingRedirect = async (req, res) => {
     const clientIp = requestIp.getClientIp(req);
     const geo = geoip.lookup(clientIp);
     const name = req.params[0];
-
+   
     try {
         const cloak = await getCloakByName(name);
-        const botUserAgents = groupBots(cloak.filteredBots);
-        const allowedCountries = getCountryCodesArray(cloak.allowedCountries);
+        const activeSubscription = await hasActiveSubscription(cloak.userId);
 
-        if (!cloak) {
-            return res.status(404).send('Cloak not found');
-        }
+        if (activeSubscription) {
+            const botUserAgents = groupBots(cloak.filteredBots);
+            const allowedCountries = getCountryCodesArray(cloak.allowedCountries);
 
-        if (botUserAgents.some(bot => userAgent.toLowerCase().includes(bot))) {
-            return res.redirect(cloak.whitePage);
-        }
+            if (!cloak) {
+                return res.status(404).send('Cloak not found');
+            }
 
-        if (geo) {
-            const country = geo.country;
-
-            if (!allowedCountries.includes(country)) {
+            if (botUserAgents.some(bot => userAgent.toLowerCase().includes(bot))) {
                 return res.redirect(cloak.whitePage);
             }
+
+            if (geo) {
+                const country = geo.country;
+
+                if (!allowedCountries.includes(country)) {
+                    return res.redirect(cloak.whitePage);
+                }
+            }
+
+
+            return res.redirect(cloak.blackPage);
         }
-
-
-        return res.redirect(cloak.blackPage);
     } catch (error) {
         console.log('Cloak not found')
     }
 
-
-    res.status(404).send(`404: Site not found`);
+    res.status(404).send(`404: Site not found or you don't have an active subscription. Please contact us.`);
 }

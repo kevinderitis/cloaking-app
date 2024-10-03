@@ -172,7 +172,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="#profile">
+                            <a class="nav-link active" href="profile.html">
                                 <i class="fas fa-user"></i> Profile
                             </a>
                         </li>
@@ -208,8 +208,8 @@
                                 <thead>
                                     <tr>
                                         <th>Project Name</th>
-                                        <th>White Page URL</th>
-                                        <th>Black Page URL</th>
+                                        <th>White Page</th>
+                                        <th>Offer Page</th>
                                         <th>Allowed Countries</th>
                                         <th>Filtered Bots</th>
                                         <th>Actions</th>
@@ -346,17 +346,19 @@
             const hours = Math.floor((differenceInMilliseconds / (1000 * 60 * 60)) % 24);
             const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
 
-            return `${days} days, ${hours} hours, ${minutes} minutes remaining`;
+            return `${days} days, ${hours} hours, ${minutes} minutes`;
         };
 
         async function updateTrialCountdown() {
             const subscription = await fetchSubscription();
             const planElement = document.getElementById('trialCountdown');
             const link = document.createElement('a');
+            const objectSubscription = subscription[0];
 
-            if (subscription && subscription > 0) {
-                let timeRemaining = calculatePlanTimeRemaining(subscription.endDate);
-                let textContent = subscription.plan === 'trial' ? `Free Trial Time Remaining: ${timeRemaining}` : `Your ${subscription.plan} plan is active`;
+            if (objectSubscription) {
+   
+                let timeRemaining = calculatePlanTimeRemaining(objectSubscription.endDate);
+                let textContent = objectSubscription.plan === 'trial' ? `Reminder: you have only ${timeRemaining} left in your free trial. Upgrade your plan to keep enjoying our amazing services.` : `Your ${objectSubscription.plan} plan is active`;
                 link.href = 'payment.html';
                 link.style.color = 'white';
                 link.style.textDecoration = 'underline';

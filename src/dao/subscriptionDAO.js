@@ -40,3 +40,40 @@ export const removeSubscription = async (userId, plan) => {
         throw new Error('Error deleting subscription: ' + error.message);
     }
 };
+
+export const hasActiveSubscription = async userId => {
+    try {
+        const subscriptions = await getSubscriptionsByUserId(userId);
+
+        const today = new Date();
+
+        const hasActiveSubscription = subscriptions.some(subscription => {
+            return new Date(subscription.endDate) > today;
+        });
+
+        return hasActiveSubscription;
+    } catch (error) {
+        throw new Error('Error fetching subscriptions: ' + error.message);
+    }
+};
+
+
+export const createTrialSubscription = async (userId) => {
+    const trialDurationInDays = 3;
+    const now = new Date();
+
+    const newSubscription = {
+        userId: userId,
+        plan: 'trial',
+        startDate: now,
+        endDate: new Date(now.getTime() + trialDurationInDays * 24 * 60 * 60 * 1000), // fecha de fin en 3 días
+        isActive: true,
+    };
+
+    try {
+        await createNewSubscription(newSubscription)
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};

@@ -5,6 +5,8 @@ import path from 'path';
 import authRouter from './src/routes/authRouter.js';
 import cloakRouter from './src/routes/cloakRouter.js';
 import userRouter from './src/routes/userRouter.js';
+import googleRouter from './src/routes/googleRouter.js';
+import cors from 'cors';
 import { config } from './src/config/config.js';
 import { processCloakingRedirect } from './src/controllers/cloakController.js';
 
@@ -24,13 +26,14 @@ app.use(session({
     cookie: { secure: false }
 }));
 
+app.use(cors());
 app.use(express.json());
-
 app.use(express.static(path.resolve('public')));
 
 app.use('/auth', authRouter);
 app.use('/cloak', cloakRouter);
 app.use('/user', userRouter);
+app.use('/google', googleRouter);
 
 app.get('/*', processCloakingRedirect);
 

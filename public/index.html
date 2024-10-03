@@ -156,7 +156,7 @@
 
                     document.getElementById('googleLogin').addEventListener('click', function () {
                         console.log('Google login clicked');
-                        Swal.fire('Google login initiated!');
+                        window.location.href = '/google';
                     });
 
                     // Handle register link click
@@ -193,7 +193,7 @@
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Register</button>
                     </form>
-                    <button id="googleLogin" class="btn btn-google w-100">
+                    <button id="googleRegisterId" class="btn btn-google w-100">
                         <i class="fab fa-google me-2"></i> Register with Google
                     </button>
                     <div class="login-link">
@@ -253,6 +253,12 @@
                             });
                         }
                     });
+
+                    document.getElementById('googleRegisterId').addEventListener('click', function () {
+                        console.log('Google register clicked');
+                        window.location.href = '/google';
+                    });
+
 
                     document.getElementById('loginLink').addEventListener('click', function (e) {
                         e.preventDefault();
