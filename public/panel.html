@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloaked Links Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 40px;
+            /* Adjusted for the trial header */
+        }
+
+        .container-fluid {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.3rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background-color: #6f42c1;
+            color: white;
+            border-radius: 0.3rem 0.3rem 0 0 !important;
+        }
+
+        .btn-primary {
+            background-color: #6f42c1;
+            border-color: #6f42c1;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a32a3;
+            border-color: #5a32a3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            border-top: none;
+        }
+
+        /* Styles for the animated header */
+        .trial-header {
+            background-color: #6f42c1;
+            color: white;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .trial-text {
+            white-space: nowrap;
+            animation: moveText 20s linear infinite;
+        }
+
+        @keyframes moveText {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Styles for the sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -200px;
+            /* Start off-screen */
+            bottom: 0;
+            width: 200px;
+            background-color: #6f42c1;
+            padding-top: 60px;
+            /* Adjusted for the trial header and hamburger button */
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar .nav-link {
+            color: #fff;
+            padding: 10px 20px;
+            transition: all 0.3s;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+
+        .content {
+            transition: all 0.3s;
+        }
+
+        .content.active {
+            margin-right: 200px;
+        }
+
+        /* Hamburger button styles */
+        .hamburger-btn {
+            position: fixed;
+            top: 5px;
+            right: 15px;
+            z-index: 1002;
+            background: #6f42c1;
+            border: none;
+            color: white;
+            /* padding: 10px 15px; */
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .content.active {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="trial-header">
+        <div class="trial-text" id="trialCountdown"></div>
+    </div>
+
+    <button class="hamburger-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="sidebar">
+                <div class="position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#dashboard">
+                                <i class="fas fa-dashboard"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#profile">
+                                <i class="fas fa-user"></i> Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="payment.html">
+                                <i class="fas fa-credit-card"></i> Subscription
+                            </a>
+                        </li>
+                        <li class="nav-item mt-auto">
+                            <a class="nav-link text-danger" href="#" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-12 content">
+                <div class="card shadow mb-4 mt-4">
+                    <div class="card-header">
+                        <h2 class="card-title mb-0">Cloaked Links Panel</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <p class="card-text text-muted mb-0">Manage your cloaked links</p>
+                            <a href="new-config.html" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Add New Cloaking
+                            </a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="cloakTable">
+                                <thead>
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <th>White Page URL</th>
+                                        <th>Black Page URL</th>
+                                        <th>Allowed Countries</th>
+                                        <th>Filtered Bots</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Table data will be dynamically populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        async function fetchCloaks() {
+            try {
+                const response = await fetch('/cloak');
+                if (!response.ok) {
+                    throw new Error('Error en la solicitud');
+                }
+                const cloaks = await response.json();
+                populateTable(cloaks);
+            } catch (error) {
+                console.error('Error al obtener los cloaks:', error);
+            }
+        }
+
+        const deleteCloak = async (cloakName) => {
+            const { value: userConfirmation } = await Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to delete the cloak named "${cloakName}". This action cannot be undone.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!'
+            });
+
+            if (!userConfirmation) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/cloak/${cloakName}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    alert(`Cloak "${cloakName}" deleted successfully.`);
+                    location.reload();
+                } else {
+                    const errorMessage = await response.json();
+                    alert(`Failed to delete cloak: ${errorMessage.message}`);
+                }
+            } catch (error) {
+                console.error('Error deleting cloak:', error);
+                alert('An error occurred while trying to delete the cloak. Please try again later.');
+            }
+        };
+
+        function copyRootUrl(name) {
+            const rootUrl = window.location.origin;
+            navigator.clipboard.writeText(`${rootUrl}/${name}`)
+                .then(() => {
+                    Swal.fire('Copiado', 'URL copiada en el portapapeles', 'success');
+                })
+                .catch(err => {
+                    console.error('Error al copiar la URL', err);
+                });
+        }
+
+        function populateTable(cloaks) {
+            const tableBody = document.querySelector('#cloakTable tbody');
+            tableBody.innerHTML = '';
+
+            if (cloaks.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="6" class="text-center text-muted">No cloaked links available yet.</td>
+                `;
+                tableBody.appendChild(row);
+            } else {
+                cloaks.forEach(cloak => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${cloak.name}</td>
+                        <td><a href="${cloak.whitePage}" target="_blank">${cloak.whitePage}</a></td>
+                        <td><a href="${cloak.blackPage}" target="_blank">${cloak.blackPage}</a></td>
+                        <td>${cloak.allowedCountries.join(', ')}</td>
+                        <td>${cloak.filteredBots.join(', ')}</td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm" onclick="deleteCloak('${cloak.name}')">Delete</button>
+                            <button class="btn btn-primary btn-sm" onclick="copyRootUrl('${cloak.name}')">URL</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+        }
+
+        async function fetchSubscription() {
+            try {
+                const response = await fetch('/user/subscription');
+                if (!response.ok) {
+                    throw new Error('Error fetching trial time');
+                }
+                const data = await response.json();
+                return data.subscription;
+            } catch (error) {
+                console.error('Error fetching trial time:', error);
+                return 'Error fetching trial time';
+            }
+        }
+
+        const calculatePlanTimeRemaining = (endDate) => {
+            const now = new Date();
+            const end = new Date(endDate);
+
+            const differenceInMilliseconds = end - now;
+
+            if (differenceInMilliseconds <= 0) {
+                return 'Trial expired';
+            }
+
+            const seconds = Math.floor((differenceInMilliseconds / 1000) % 60);
+            const minutes = Math.floor((differenceInMilliseconds / 1000 / 60) % 60);
+            const hours = Math.floor((differenceInMilliseconds / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+
+            return `${days} days, ${hours} hours, ${minutes} minutes remaining`;
+        };
+
+        async function updateTrialCountdown() {
+            const subscription = await fetchSubscription();
+            const planElement = document.getElementById('trialCountdown');
+            const link = document.createElement('a');
+
+            if (subscription && subscription > 0) {
+                let timeRemaining = calculatePlanTimeRemaining(subscription.endDate);
+                let textContent = subscription.plan === 'trial' ? `Free Trial Time Remaining: ${timeRemaining}` : `Your ${subscription.plan} plan is active`;
+                link.href = 'payment.html';
+                link.style.color = 'white';
+                link.style.textDecoration = 'underline';
+                link.textContent = textContent;
+                planElement.textContent = '';
+
+                planElement.appendChild(link);
+
+            } else {
+                link.href = 'payment.html';
+                link.style.color = 'white';
+                link.style.textDecoration = 'underline';
+                link.textContent = "You don’t have an active plan yet. Click here to get one.";
+                planElement.textContent = '';
+
+                planElement.appendChild(link);
+            }
+
+        }
+
+        fetchCloaks();
+        updateTrialCountdown();
+        setInterval(updateTrialCountdown, 60000);
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.content').classList.toggle('active');
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch('/auth/logout');
+
+                if (response.ok) {
+
+                    window.location.href = 'index.html';
+                } else {
+                    console.error('Error al cerrar sesión:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error al realizar la solicitud de logout:', error);
+            }
+        }
+    </script>
+    <script src="js/authCheck.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloaking Service - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+        }
+
+        .jumbotron {
+            background-color: #fff;
+            border-radius: 0.3rem;
+            padding: 2rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background-color: #6f42c1;
+            border-color: #6f42c1;
+            border-radius: 0.3rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a32a3;
+            border-color: #5a32a3;
+        }
+
+        .explanation {
+            background-color: #e9ecef;
+            border-radius: 0.3rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .btn-google {
+            font-size: 1.25rem;
+            padding: 1rem;
+            height: auto;
+            border: 2px solid rgba(0, 0, 0, 0.34);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome to Our Cloaking Service</h1>
+            <p class="lead">Protect your online presence with our advanced cloaking technology.</p>
+            <hr class="my-4">
+            <p>Our service allows you to create a seamless redirection between your white page and black page, ensuring
+                your content is displayed appropriately based on the visitor.</p>
+            <a class="btn btn-primary btn-lg" href="#" role="button" id="goToCloakingPanel">Go to Cloaking Panel</a>
+        </div>
+
+        <div class="explanation">
+            <h2>How It Works</h2>
+            <ol>
+                <li><strong>Set Up Your Pages:</strong> Prepare your white page (public-facing content) and black page
+                    (content for specific visitors).</li>
+                <li><strong>Create Cloaking URL:</strong> Use our cloaking panel to generate a unique URL that will
+                    serve as the entry point for your visitors.</li>
+                <li><strong>Configure Redirection:</strong> Specify the conditions under which visitors should see the
+                    white page or the black page.</li>
+                <li><strong>Implement and Test:</strong> Apply the cloaking URL to your marketing campaigns and test to
+                    ensure it's working as expected.</li>
+                <li><strong>Monitor and Adjust:</strong> Use our analytics to track performance and make adjustments as
+                    needed.</li>
+            </ol>
+            <p class="mt-3">Our advanced algorithms ensure that your content is delivered seamlessly, providing a smooth
+                experience for all visitors while protecting your sensitive content.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('goToCloakingPanel').addEventListener('click', function (e) {
+            e.preventDefault();
+            showLoginModal();
+        });
+
+        function showLoginModal() {
+            Swal.fire({
+                title: '<h2 class="card-title mb-0 text-center">Login</h2>',
+                html: `
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+                    </form>
+                    <div class="divider">
+                        <span>or</span>
+                    </div>
+                    <button id="googleLogin" class="btn btn-google w-100">
+                        <i class="fab fa-google me-2"></i> Login with Google
+                    </button>
+                    <div class="register-link">
+                        <p>Don't have an account? <a href="#" id="registerLink">Register here</a></p>
+                    </div>
+                `,
+                showConfirmButton: false,
+                didOpen: async () => {
+                    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+                        e.preventDefault();
+
+                        const email = document.getElementById('email').value;
+                        const password = document.getElementById('password').value;
+
+                        console.log('Login submitted:', { email, password });
+
+                        try {
+                            const response = await fetch('/auth/login', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ username: email, password: password })
+                            });
+
+                            if (!response.ok) {
+                                const errorData = await response.json();
+                                await Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: errorData.message || 'Las credenciales son incorrectas.',
+                                });
+                                return;
+                            }
+
+                            const data = await response.json();
+                            console.log('Login successful:', data);
+
+                            window.location.href = 'panel.html';
+                        } catch (error) {
+                            console.error('Error during login:', error);
+                            alert('Ocurrió un error al iniciar sesión. Por favor, inténtalo de nuevo.');
+                        } finally {
+                            this.reset();
+                        }
+                    });
+
+                    document.getElementById('googleLogin').addEventListener('click', function () {
+                        console.log('Google login clicked');
+                        Swal.fire('Google login initiated!');
+                    });
+
+                    // Handle register link click
+                    document.getElementById('registerLink').addEventListener('click', function (e) {
+                        e.preventDefault();
+                        Swal.close(); // Close the login modal
+                        showRegisterModal(); // Open the register modal
+                    });
+                }
+            });
+        }
+
+        function showRegisterModal() {
+            Swal.fire({
+                title: '<h2 class="card-title mb-0 text-center">Register</h2>',
+                html: `
+                    <form id="registerForm">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <input type="text" class="form-control" id="firstName" placeholder="Enter your first name" required>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" id="lastName" placeholder="Enter your last name" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                    </form>
+                    <button id="googleLogin" class="btn btn-google w-100">
+                        <i class="fab fa-google me-2"></i> Register with Google
+                    </button>
+                    <div class="login-link">
+                        <p>Already have an account? <a href="#" id="loginLink">Login here</a></p>
+                    </div>
+                `,
+                showConfirmButton: false,
+                didOpen: async () => {
+                    document.getElementById('registerForm').addEventListener('submit', async function (e) {
+                        e.preventDefault();
+
+                        const firstName = document.getElementById('firstName').value;
+                        const lastName = document.getElementById('lastName').value;
+                        const email = document.getElementById('email').value;
+                        const password = document.getElementById('password').value;
+                        const confirmPassword = document.getElementById('confirmPassword').value;
+
+                        if (password !== confirmPassword) {
+                            Swal.fire('Passwords do not match!', '', 'error');
+                            return;
+                        }
+
+                        console.log('Registration submitted:', { firstName, lastName, email, password });
+
+                        try {
+                            const response = await fetch('/auth/signup', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ firstName, lastName, email, password })
+                            });
+
+                            if (!response.ok) {
+                                const errorData = await response.json();
+                                console.error('Registro fallido:', errorData.message);
+                                await Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: errorData.message || 'Ocurrió un error en el registro.',
+                                });
+                                return;
+                            }
+
+                            const data = await response.json();
+
+                            Swal.close();
+                            showLoginModal();
+
+                            this.reset();
+                        } catch (error) {
+                            console.error('Error durante el registro:', error);
+                            await Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Ocurrió un error al registrar. Por favor, inténtalo de nuevo.',
+                            });
+                        }
+                    });
+
+                    document.getElementById('loginLink').addEventListener('click', function (e) {
+                        e.preventDefault();
+                        Swal.close();
+                        showLoginModal();
+                    });
+                }
+            });
+        }
+
+        (async function () {
+            try {
+                const response = await fetch('/auth/check-session');
+                const data = await response.json();
+
+                if (data.loggedIn) {
+                    window.location.href = 'panel.html';
+                }
+            } catch (error) {
+                console.error('Error checking session:', error);
+            }
+        })();
+    </script>
+</body>
+
+</html>

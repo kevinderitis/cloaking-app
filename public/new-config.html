@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloaking Configuration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 2rem;
+        }
+
+        .container-fluid {
+            max-width: 1400px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.3rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            height: 100%;
+        }
+
+        .card-header {
+            background-color: #6f42c1;
+            color: white;
+            border-radius: 0.3rem 0.3rem 0 0 !important;
+        }
+
+        .btn-primary {
+            background-color: #6f42c1;
+            border-color: #6f42c1;
+        }
+
+        .cancel-btn {
+            background-color: #b6a5d4;
+            border-color: #d3cae3;
+        }
+
+        .btn-primary:hover {
+            background-color: #9781be;
+            border-color: #9781be;
+        }
+
+        .form-check-input:checked {
+            background-color: #6f42c1;
+            border-color: #6f42c1;
+        }
+
+        #countryList {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        #countryList div {
+            margin-left: 20px;
+        }
+
+        #countryList .form-check {
+            padding: 0.5rem 1rem;
+        }
+
+        #countryList .form-check:hover {
+            background-color: #f8f9fa;
+        }
+
+        .sticky-bottom {
+            position: sticky;
+            bottom: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h1 class="text-center mb-4">Cloaking Configuration</h1>
+
+        <form id="cloakingConfigForm">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">Cloaking URLs</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="whitePage" class="form-label">White Page URL</label>
+                                <input type="url" class="form-control" id="whitePage" placeholder="Enter white page URL"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="blackPage" class="form-label">Offer Page URL</label>
+                                <input type="url" class="form-control" id="blackPage" placeholder="Enter offer page URL"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="customUrl" class="form-label">Custom URL Name</label>
+                                <input type="text" class="form-control" id="customUrl"
+                                    placeholder="Enter custom URL name" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">Bot Filtering</h2>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Select the bots you want to filter:</p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="whatsappBot">
+                                <label class="form-check-label" for="whatsappBot">
+                                    Whatsapp Bot
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="googleBot">
+                                <label class="form-check-label" for="googleBot">
+                                    Google Bot
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="facebookBot">
+                                <label class="form-check-label" for="facebookBot">
+                                    Facebook Bot
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="twitterBot">
+                                <label class="form-check-label" for="twitterBot">
+                                    Twitter Bot
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="tiktokBot">
+                                <label class="form-check-label" for="tiktokBot">
+                                    TikTok Bot
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="bingBot">
+                                <label class="form-check-label" for="bingBot">
+                                    Bing Bot
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="yandexBot">
+                                <label class="form-check-label" for="yandexBot">
+                                    Yandex Bot
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">Country Selection</h2>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Select the countries to allow:</p>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="countrySearch"
+                                    placeholder="Search countries...">
+                            </div>
+                            <div id="countryList">
+                                <!-- Countries will be dynamically populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sticky-bottom text-center">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Save Configuration
+                </button>
+
+                <button class="btn cancel-btn" onclick="goToPanel()">
+                    <i class="fas fa-cancel me-2"></i>Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+
+        function goToPanel(){
+            window.location.href = 'panel.html'
+        }
+        
+        const countries = [
+            "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Côte d'Ivoire", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Holy See", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine State", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+        ];
+
+        const countryList = document.getElementById('countryList');
+        const countrySearch = document.getElementById('countrySearch');
+        let selectedCountries = new Set();
+
+        function createCountryCheckbox(country) {
+            const div = document.createElement('div');
+            div.className = 'form-check';
+            div.innerHTML = `
+                <input class="form-check-input" type="checkbox" value="${country}" id="${country}" ${selectedCountries.has(country) ? 'checked' : ''}>
+                <label class="form-check-label" for="${country}">
+                    ${country}
+                </label>
+            `;
+            div.querySelector('input').addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    selectedCountries.add(country);
+                } else {
+                    selectedCountries.delete(country);
+                }
+            });
+            return div;
+        }
+
+        function populateCountries(filter = '') {
+            countryList.innerHTML = '';
+            countries.forEach(country => {
+                if (country.toLowerCase().includes(filter.toLowerCase())) {
+                    countryList.appendChild(createCountryCheckbox(country));
+                }
+            });
+        }
+
+        populateCountries();
+
+        countrySearch.addEventListener('input', (e) => {
+            populateCountries(e.target.value);
+        });
+
+        document.getElementById('cloakingConfigForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const allowedCountries = Array.from(selectedCountries);
+
+            const filteredBots = [];
+            if (document.getElementById('whatsappBot').checked) filteredBots.push('whatsapp');
+            if (document.getElementById('googleBot').checked) filteredBots.push('google');
+            if (document.getElementById('facebookBot').checked) filteredBots.push('facebook');
+            if (document.getElementById('twitterBot').checked) filteredBots.push('twitter');
+            if (document.getElementById('tiktokBot').checked) filteredBots.push('tiktok');
+            if (document.getElementById('bingBot').checked) filteredBots.push('bing');
+            if (document.getElementById('yandexBot').checked) filteredBots.push('yandex');
+
+
+            const config = {
+                whitePage: document.getElementById('whitePage').value,
+                blackPage: document.getElementById('blackPage').value,
+                name: document.getElementById('customUrl').value,
+                filteredBots: filteredBots,
+                allowedCountries: allowedCountries
+            };
+
+            try {
+                const response = await fetch('/cloak', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Cloak configuration saved:', result);
+                    window.location.href = "panel.html";
+                } else {
+                    throw new Error('Error al guardar la configuración del cloak');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error saving cloak, Custom URL name is already in use.',
+                });
+            }
+        });
+    </script>
+    <script src="js/authCheck.js"></script>
+</body>
+
+</html>
