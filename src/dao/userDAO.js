@@ -7,10 +7,10 @@ export const findUserByUsername = async (username) => {
 export const createUser = async (userData) => {
     try {
         const newUser = new User(userData);
-        const savedUser = await newUser.save(); 
-        return savedUser; 
+        const savedUser = await newUser.save();
+        return savedUser;
     } catch (error) {
         console.error('Error al crear el usuario:', error);
-        throw new Error('No se pudo crear el usuario'); 
+        throw new Error('No se pudo crear el usuario');
     }
 };

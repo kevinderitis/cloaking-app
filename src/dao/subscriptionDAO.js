@@ -66,7 +66,7 @@ export const createTrialSubscription = async (userId) => {
         userId: userId,
         plan: 'trial',
         startDate: now,
-        endDate: new Date(now.getTime() + trialDurationInDays * 24 * 60 * 60 * 1000), // fecha de fin en 3 días
+        endDate: new Date(now.getTime() + trialDurationInDays * 24 * 60 * 60 * 1000),
         isActive: true,
     };
 
@@ -75,5 +75,45 @@ export const createTrialSubscription = async (userId) => {
     } catch (error) {
         console.log(error);
         throw error;
+    }
+};
+
+export const addSubscriptionPayment = async (userId, amount) => {
+    const PREMIUM_AMOUNT = 50;
+    const ONE_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000;
+    const plan = amount >= PREMIUM_AMOUNT ? 'premium' : 'basic';
+
+    try {
+        let existingSubscription = await getSubscriptionsByUserId(userId);
+
+        if (existingSubscription && existingSubscription.length > 0) {
+            let activeSubscription = existingSubscription.find(sub => new Date(sub.endDate) > new Date());
+
+            if (activeSubscription) {
+                activeSubscription.startDate = new Date(); 
+                activeSubscription.endDate = new Date(Date.now() + ONE_MONTH_IN_MS); 
+                activeSubscription.plan = plan; 
+                activeSubscription.isActive = true;
+
+                await activeSubscription.save(); 
+                return activeSubscription;
+            }
+        }
+
+        
+        const newSubscription = {
+            userId: userId,
+            plan: plan,
+            startDate: new Date(),
+            endDate: new Date(Date.now() + ONE_MONTH_IN_MS), 
+            isActive: true,
+        };
+
+        const createdSubscription = await createNewSubscription(newSubscription);
+        return createdSubscription;
+
+    } catch (error) {
+        console.log('Error processing subscription payment:', error);
+        throw new Error('Error processing subscription payment: ' + error.message);
     }
 };
