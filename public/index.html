@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloaking Service - Home</title>
+    <title>Ghost router</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -51,16 +51,25 @@
             margin-top: 20px;
             margin-bottom: 20px;
         }
+
+        header {
+            text-align: left;
+            margin: 0px;
+            background-color: red;
+        }
+
+        header img {
+            max-width: 100px;
+        }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="jumbotron">
-            <h1 class="display-4">Welcome to Our Cloaking Service</h1>
+            <h1 class="display-4">Welcome to Ghost router</h1>
             <p class="lead">Protect your online presence with our advanced cloaking technology.</p>
             <hr class="my-4">
-            <p>Our service allows you to create a seamless redirection between your white page and black page, ensuring
+            <p>Our service allows you to create a seamless redirection between your white page and real offer page, ensuring
                 your content is displayed appropriately based on the visitor.</p>
             <a class="btn btn-primary btn-lg" href="#" role="button" id="goToCloakingPanel">Go to Cloaking Panel</a>
         </div>
@@ -68,12 +77,12 @@
         <div class="explanation">
             <h2>How It Works</h2>
             <ol>
-                <li><strong>Set Up Your Pages:</strong> Prepare your white page (public-facing content) and black page
+                <li><strong>Set Up Your Pages:</strong> Prepare your white page (public-facing content) and offer page
                     (content for specific visitors).</li>
                 <li><strong>Create Cloaking URL:</strong> Use our cloaking panel to generate a unique URL that will
                     serve as the entry point for your visitors.</li>
                 <li><strong>Configure Redirection:</strong> Specify the conditions under which visitors should see the
-                    white page or the black page.</li>
+                    white page or the offer page.</li>
                 <li><strong>Implement and Test:</strong> Apply the cloaking URL to your marketing campaigns and test to
                     ensure it's working as expected.</li>
                 <li><strong>Monitor and Adjust:</strong> Use our analytics to track performance and make adjustments as
