@@ -61,15 +61,39 @@
         header img {
             max-width: 100px;
         }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+
+        footer a {
+            color: #1e90ff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="jumbotron">
             <h1 class="display-4">Welcome to Ghost router</h1>
             <p class="lead">Protect your online presence with our advanced cloaking technology.</p>
             <hr class="my-4">
-            <p>Our service allows you to create a seamless redirection between your white page and real offer page, ensuring
+            <p>Our service allows you to create a seamless redirection between your white page and real offer page,
+                ensuring
                 your content is displayed appropriately based on the visitor.</p>
             <a class="btn btn-primary btn-lg" href="#" role="button" id="goToCloakingPanel">Go to Cloaking Panel</a>
         </div>
@@ -291,6 +315,10 @@
             }
         })();
     </script>
+    <footer>
+        <p>&copy; 2024 Ghost Router. All rights reserved.</p>
+        <p><a href="policy.html" target="_blank">Privacy Policy</a></p>
+    </footer>
 </body>
 
 </html>
